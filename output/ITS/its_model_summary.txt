@@ -1,0 +1,27 @@
+                            OLS Regression Results                            
+==============================================================================
+Dep. Variable:         mean_sentiment   R-squared:                       0.867
+Model:                            OLS   Adj. R-squared:                  0.836
+Method:                 Least Squares   F-statistic:                     28.19
+Date:                Thu, 09 Oct 2025   Prob (F-statistic):           5.84e-06
+Time:                        15:03:11   Log-Likelihood:                 22.651
+No. Observations:                  17   AIC:                            -37.30
+Df Residuals:                      13   BIC:                            -33.97
+Df Model:                           3                                         
+Covariance Type:            nonrobust                                         
+==============================================================================
+                 coef    std err          t      P>|t|      [0.025      0.975]
+------------------------------------------------------------------------------
+const          0.1721      0.047      3.653      0.003       0.070       0.274
+Time          -0.0269      0.011     -2.386      0.033      -0.051      -0.003
+Event         -0.4299      0.125     -3.441      0.004      -0.700      -0.160
+PostTime       0.0286      0.015      1.948      0.073      -0.003       0.060
+==============================================================================
+Omnibus:                        0.652   Durbin-Watson:                   1.768
+Prob(Omnibus):                  0.722   Jarque-Bera (JB):                0.496
+Skew:                           0.375   Prob(JB):                        0.780
+Kurtosis:                       2.631   Cond. No.                         92.1
+==============================================================================
+
+Notes:
+[1] Standard Errors assume that the covariance matrix of the errors is correctly specified.
