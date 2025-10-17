@@ -1,5 +1,6 @@
 #remove unknowns from the analysis
 # Effect size + 95% confidence intervals + t-tests for subpopulations
+# I have 2 inputs: 1. INPUT_Per_Tweets 2.per user INPUT_Grouped_By_USER each time I am commenting 1
 import pandas as pd
 import numpy as np
 import seaborn as sns
@@ -14,12 +15,16 @@ import os
 #df['Date'] = pd.to_datetime(df['Date'], errors='coerce')
 #df = df.dropna(subset=['Date'])
 
-INPUT_Grouped_By_USER = "data/grouped2_data.pkl"
-#INPUT_Per_Tweets      = "data/normalized_data.pkl"
+
+## This script can use two types of input data:1. INPUT_Per_Tweets – data at the tweet level 2. INPUT_Grouped_By_USER – data aggregated per user.
+#  Only one input should be active at a time; comment out the other as needed.
+#INPUT_Grouped_By_USER = "data/grouped2_data.pkl"    
+INPUT_Per_Tweets      = "data/normalized_data.pkl"
 
 
 # -------- Load --------
-df = pd.read_pickle(INPUT_Grouped_By_USER)
+#INPUT_Per_Tweets or INPUT_Grouped_By_USER 
+df = pd.read_pickle(INPUT_Per_Tweets)
 
 # -------- Helpers --------
 def clean_str(x):
@@ -110,6 +115,12 @@ comparison_df.to_csv("output/ITS/effect_size_and_ci_results.csv", index=False)
 print("\n--- Effect Sizes & Confidence Intervals ---")
 print(comparison_df)
 
+# Round all numeric columns to 3 decimals, except counts
+numeric_cols = comparison_df.select_dtypes(include=[np.number]).columns
+comparison_df[numeric_cols] = comparison_df[numeric_cols].round(3)
+#comparison_df.to_csv("output/ITS/effect_size_and_ci_results.csv", index=False)
 
+print("\n--- Effect Sizes & 95% Confidence Intervals (Rounded to 3 Decimals) ---")
+print(comparison_df)
 
 # ------------------

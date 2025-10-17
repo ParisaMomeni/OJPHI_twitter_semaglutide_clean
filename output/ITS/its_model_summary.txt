@@ -3,8 +3,8 @@
 Dep. Variable:         mean_sentiment   R-squared:                       0.867
 Model:                            OLS   Adj. R-squared:                  0.836
 Method:                 Least Squares   F-statistic:                     28.19
-Date:                Thu, 09 Oct 2025   Prob (F-statistic):           5.84e-06
-Time:                        15:03:11   Log-Likelihood:                 22.651
+Date:                Wed, 15 Oct 2025   Prob (F-statistic):           5.84e-06
+Time:                        03:08:17   Log-Likelihood:                 22.651
 No. Observations:                  17   AIC:                            -37.30
 Df Residuals:                      13   BIC:                            -33.97
 Df Model:                           3                                         

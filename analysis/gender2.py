@@ -1,4 +1,5 @@
 #1.  CALCULATE OVERALL SENTIMENT 2. gender DESCRIPTIVE STATISTICS
+#df is input data frame. we might have 4: 1.per tweet , 2.per user 3.per tweet without retweets 4.per user without retweets. 
 import pandas as pd
 import numpy as np
 import pandas as pd
@@ -19,9 +20,12 @@ if __name__ == "__main__":
     output_dir = "output/gender/"
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)
+    #--------------------------
+    #Each time we uncomment the relevant df loading line:
+    #--------------------------
     df = pd.read_pickle("../data/normalized_data.pkl")
     #df = df[df['Engagement Type'] != 'RETWEET']
-    df = pd.read_pickle("../data/grouped2_data.pkl")
+    #df = pd.read_pickle("../data/grouped2_data.pkl")
     #df= pd.read_pickle("../data/grouped2_data_removed_retweets.pkl")
     #--------------------------
     df = df.dropna(subset=['mean_sentiment'])

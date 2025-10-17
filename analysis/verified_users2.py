@@ -1,3 +1,5 @@
+# 1.  VERIFIED USER DESCRIPTIVE STATISTICS
+# df is input data frame. we might have 4: 1.per tweet , 2.per user 3.per tweet without retweets 4.per user without retweets. Each time we uncomment the relevant df loading line:
 import pandas as pd
 import numpy as np
 from scipy import stats
@@ -7,9 +9,9 @@ from statsmodels.formula.api import ols
 import statsmodels.api as sm
 import os
 if __name__ == "__main__":
-    df = pd.read_pickle("../data/normalized_data.pkl") # all tweets and retweets
-    df = df[df['Engagement Type'] != 'RETWEET'] # remove retweets
-    #df = pd.read_pickle("../data/grouped2_data.pkl") # all tweets and retweets grouped by author
+    #df = pd.read_pickle("../data/normalized_data.pkl") # all tweets and retweets
+    #df = df[df['Engagement Type'] != 'RETWEET'] # remove retweets
+    df = pd.read_pickle("../data/grouped2_data.pkl") # all tweets and retweets grouped by author
     #df= pd.read_pickle("../data/grouped2_data_removed_retweets.pkl") # all tweets without retweets grouped by author
     output_root = "output/verified"  
     

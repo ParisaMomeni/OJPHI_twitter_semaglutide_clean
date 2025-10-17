@@ -1,3 +1,5 @@
+# table 4: Country and Regional sentiment means
+
 import pandas as pd
 import numpy as np
 from pathlib import Path
@@ -6,12 +8,16 @@ if __name__ == "__main__":
     RegionalRoot = Path("output/regional")
     CountryRoot  = Path("output/country")
 
+ #------------4 df inputs : -----------------------------------
+ # 1. grouped2_data.pkl 2. normalized_data.pkl 3. grouped2_data_removed_retweets.pkl 4. processed_data.pkl
+ # Outcoments one df each time
+ #-------------------------------------------------------------
     df = pd.read_pickle("../data/normalized_data.pkl") # all tweets and retweets
-    df = df[df['Engagement Type'] != 'RETWEET'] # remove retweets
+    #df = df[df['Engagement Type'] != 'RETWEET'] # remove retweets
     #df = pd.read_pickle("../data/grouped2_data.pkl") # all tweets and retweets grouped by user
     #df= pd.read_pickle("../data/grouped2_data_removed_retweets.pkl") # all tweets without retweets grouped by user
     #df = pd.read_pickle("../data/grouped2_data.pkl").copy()
-
+#-----------------------------------------------------------
     
     # Normalize Region text and exclude Unknown/Other/blank + NaN
     df['Region'] = df['Region'].astype(str).str.strip()
@@ -31,7 +37,6 @@ if __name__ == "__main__":
 
     df["Country"] = df["Region"].apply(map_country)
 
-    # keep only US / Non-US (drop Unknown to match your region filtering style)
     df_country = df[df["Country"].isin(["US", "Non-US", "Unknown"])].copy()
 
     country_group = (
