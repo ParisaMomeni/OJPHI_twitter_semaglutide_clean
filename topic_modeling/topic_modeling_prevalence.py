@@ -57,13 +57,17 @@ state_to_region = {
         'District of Columbia': 'Northeast',
 }
 
-rcParams['font.family'] = 'Serif'
-rcParams['axes.labelsize'] = 12
-rcParams['axes.titlesize'] = 12
-rcParams['xtick.labelsize'] = 14
-rcParams['ytick.labelsize'] = 14
-rcParams['legend.fontsize'] = 10
-rcParams['figure.titlesize'] = 16
+plt.rcParams['font.family'] = 'Serif'
+plt.rcParams['font.size'] = 15  # Base font size
+plt.rcParams['axes.labelsize'] = 15
+plt.rcParams['axes.titlesize'] = 15
+plt.rcParams['xtick.labelsize'] = 15
+plt.rcParams['ytick.labelsize'] = 15
+plt.rcParams['legend.fontsize'] = 15
+plt.rcParams['legend.title_fontsize'] = 15
+plt.rcParams['font.weight'] = 'bold'
+plt.rcParams['axes.titleweight'] = 'bold'
+plt.rcParams['axes.labelweight'] = 'bold'
 
 #plt.rcParams['font.weight'] = 'bold'
 plt.rcParams['axes.titleweight'] = 'bold'
@@ -77,6 +81,8 @@ categories = ["T0","T1","T2","T3","T4", "T5","T6","T7","T8","T9"]
 n_groups = len(categories)
 colors = ["blue", "orange", "green", "red", "purple"]
 hatches = ["/", "\\", "/", "\\", "/"]
+dashes = [[1, 0], [2, 2], [3, 2], [1, 2], [3, 1]]
+markers = ['o', 's', '^', 'D', 'v']
 bar_width = 0.25
 x = np.arange(n_groups)
 
@@ -170,7 +176,7 @@ region_line_data = np.array([
     region_bar_data[4] / region_bar_data[4].sum()
 ])
 
-fig, (ax1, ax3, ax5, ax7, ax9) = plt.subplots(5, 1, figsize=(12, 15))
+fig, (ax1, ax3, ax5, ax7, ax9) = plt.subplots(5, 1, figsize=(15, 15))
 
 ### Gender subplot
 for i in range(gender_n_bars):
@@ -185,7 +191,7 @@ for i in range(gender_n_bars):
     )
 
 ax1.set_xlabel("Topic Number")
-ax1.set_ylabel("Number of Tweeets", color='black')
+ax1.set_ylabel("Number of Posts", color='black')
 ax1.tick_params(axis='y', labelcolor='black')
 ax1.set_xticks(x + bar_width * (gender_n_bars - 1) / 2)
 ax1.set_xticklabels([f'{i}' for i in categories])
@@ -195,18 +201,19 @@ for i in range(gender_n_lines):
     ax2.plot(
         x + bar_width,   # center of group
         gender_line_data[i],
-        marker='o',
+        marker = markers[i],
+        dashes = dashes[i],
         linewidth=2,
         label=f'{gender_line_names[i]}'
     )
 
-ax2.set_ylabel("Percentage of Subpopulation", color='black')
+ax2.set_ylabel("% of Subpopulation", color='black')
 ax2.tick_params(axis='y', labelcolor='black')
 
 # --- Combine legends ---
 gender_bars_handles, gender_bars_labels = ax1.get_legend_handles_labels()
 gender_lines_handles, gender_lines_labels = ax2.get_legend_handles_labels()
-ax1.legend(gender_bars_handles + gender_lines_handles, gender_bars_labels + gender_lines_labels, loc='upper right')
+ax1.legend(gender_bars_handles + gender_lines_handles, gender_bars_labels + gender_lines_labels, bbox_to_anchor = (1.55, 1),  loc='upper right')
 ax1.set_title("Topic Prevalence by Gender")
 
 ### Verification status subplot
@@ -222,7 +229,7 @@ for i in range(verified_n_bars):
     )
 
 ax3.set_xlabel("Topic Number")
-ax3.set_ylabel("Number of Tweeets", color='black')
+ax3.set_ylabel("Number of Posts", color='black')
 ax3.tick_params(axis='y', labelcolor='black')
 ax3.set_xticks(x + bar_width * (verified_n_bars - 1) / 2)
 ax3.set_xticklabels([f'{i}' for i in categories])
@@ -234,18 +241,19 @@ for i in range(verified_n_lines):
     ax4.plot(
         x + bar_width,   # center of group
         verified_line_data[i],
-        marker='o',
+        marker = markers[i],
+        dashes = dashes[i],
         linewidth=2,
         label=f'{verified_line_names[i]}'
     )
 
-ax4.set_ylabel("Percentage of Subpopulation", color='black')
+ax4.set_ylabel("% of Subpopulation", color='black')
 ax4.tick_params(axis='y', labelcolor='black')
 
 # --- Combine legends ---
 verified_bars_handles, verified_bars_labels = ax3.get_legend_handles_labels()
 verified_lines_handles, verified_lines_labels = ax4.get_legend_handles_labels()
-ax3.legend(verified_bars_handles + verified_lines_handles, verified_bars_labels + verified_lines_labels, loc='upper right')
+ax3.legend(verified_bars_handles + verified_lines_handles, verified_bars_labels + verified_lines_labels, bbox_to_anchor = (1.55, 1), loc='upper right')
 ax3.set_title("Topic Prevalence by Verification Status")
 
 ### Account type subplot
@@ -261,7 +269,7 @@ for i in range(account_type_n_bars):
     )
 
 ax5.set_xlabel("Topic Number")
-ax5.set_ylabel("Number of Tweeets", color='black')
+ax5.set_ylabel("Number of Posts", color='black')
 ax5.tick_params(axis='y', labelcolor='black')
 ax5.set_xticks(x + bar_width * (account_type_n_bars - 1) / 2)
 ax5.set_xticklabels([f'{i}' for i in categories])
@@ -273,18 +281,19 @@ for i in range(account_type_n_lines):
     ax6.plot(
         x + bar_width,   # center of group
         account_type_line_data[i],
-        marker='o',
+        marker = markers[i],
+        dashes = dashes[i],
         linewidth=2,
         label=f'{account_type_line_names[i]}'
     )
 
-ax6.set_ylabel("Percentage of Subpopulation", color='black')
+ax6.set_ylabel("% of Subpopulation", color='black')
 ax6.tick_params(axis='y', labelcolor='black')
 
 # --- Combine legends ---
 account_type_bars_handles, account_type_bars_labels = ax5.get_legend_handles_labels()
 account_type_lines_handles, account_type_lines_labels = ax6.get_legend_handles_labels()
-ax5.legend(account_type_bars_handles + account_type_lines_handles, account_type_bars_labels + account_type_lines_labels, loc='upper right')
+ax5.legend(account_type_bars_handles + account_type_lines_handles, account_type_bars_labels + account_type_lines_labels, bbox_to_anchor = (1.65, 1), loc='upper right')
 ax5.set_title("Topic Prevalence by Account Type")
 
 ### Interests subplot
@@ -304,7 +313,7 @@ for i in range(interests_n_bars):
     )
 
 ax7.set_xlabel("Topic Number")
-ax7.set_ylabel("Number of Tweeets", color='black')
+ax7.set_ylabel("Number of Posts", color='black')
 ax7.tick_params(axis='y', labelcolor='black')
 #ax7.set_xticks(x + bar_width * (n_bars - 1) / 2)
 ax7.set_xticks(x)
@@ -318,19 +327,20 @@ for i in range(interests_n_lines):
         #x + bar_width,
         x,
         interests_line_data[i],
-        marker='o',
+        marker = markers[i],
+        dashes = dashes[i],
         linewidth=2,
         label=f'{interests_line_names[i]}'
     )
 
-ax8.set_ylabel("Percentage of Subpopulation", color='black')
+ax8.set_ylabel("% of Subpopulation", color='black')
 ax8.tick_params(axis='y', labelcolor='black')
 
 # --- Combine legends ---
 interests_bars_handles, interests_bars_labels = ax7.get_legend_handles_labels()
 interests_lines_handles, interests_lines_labels = ax8.get_legend_handles_labels()
 #ax7.legend(interests_bars_handles + interests_lines_handles, interests_bars_labels + interests_lines_labels, loc='upper right')
-ax7.legend(interests_bars_handles, interests_bars_labels, loc='upper right')
+ax7.legend(interests_bars_handles, interests_bars_labels, bbox_to_anchor = (1.55, 1), loc='upper right')
 ax7.set_title("Topic Prevalence by Interest")
 
 ### Region subplot
@@ -350,7 +360,7 @@ for i in range(region_n_bars):
     )
 
 ax9.set_xlabel("Topic Number")
-ax9.set_ylabel("Number of Tweeets", color='black')
+ax9.set_ylabel("Number of Posts", color='black')
 ax9.tick_params(axis='y', labelcolor='black')
 #ax7.set_xticks(x + bar_width * (n_bars - 1) / 2)
 ax9.set_xticks(x)
@@ -364,19 +374,20 @@ for i in range(region_n_lines):
         #x + bar_width,
         x,
         region_line_data[i],
-        marker='o',
+        marker = markers[i],
+        dashes = dashes[i],
         linewidth=2,
         label=f'{region_line_names[i]}'
     )
 
-ax10.set_ylabel("Percentage of Subpopulation", color='black')
+ax10.set_ylabel("% of Subpopulation", color='black')
 ax10.tick_params(axis='y', labelcolor='black')
 
 # --- Combine legends ---
 region_bars_handles, region_bars_labels = ax9.get_legend_handles_labels()
 region_lines_handles, region_lines_labels = ax10.get_legend_handles_labels()
 #ax7.legend(interests_bars_handles + interests_lines_handles, interests_bars_labels + interests_lines_labels, loc='upper right')
-ax9.legend(region_bars_handles, region_bars_labels, loc='upper right')
+ax9.legend(region_bars_handles, region_bars_labels, bbox_to_anchor = (1.55, 1), loc='upper right')
 ax9.set_title("Topic Prevalence by Region")
 
 plt.tight_layout()

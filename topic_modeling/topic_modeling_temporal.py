@@ -2,13 +2,19 @@ import matplotlib.pyplot as plt
 import numpy as np
 from matplotlib import rcParams
 
-rcParams['font.family'] = 'Serif'
-rcParams['axes.labelsize'] = 20
-rcParams['axes.titlesize'] = 20
-rcParams['xtick.labelsize'] = 18
-rcParams['ytick.labelsize'] = 20
-rcParams['legend.fontsize'] = 20
-rcParams['figure.titlesize'] = 18
+ #Parisa rcparams
+plt.rcParams['font.family'] = 'Serif'
+plt.rcParams['font.size'] = 15  # Base font size
+plt.rcParams['axes.labelsize'] = 15
+plt.rcParams['axes.titlesize'] = 15
+plt.rcParams['xtick.labelsize'] = 15
+plt.rcParams['ytick.labelsize'] = 15
+plt.rcParams['legend.fontsize'] = 15
+plt.rcParams['legend.title_fontsize'] = 15
+plt.rcParams['font.weight'] = 'bold'
+plt.rcParams['axes.titleweight'] = 'bold'
+plt.rcParams['axes.labelweight'] = 'bold'
+
 
 #plt.rcParams['font.weight'] = 'bold'
 plt.rcParams['axes.titleweight'] = 'bold'
@@ -23,6 +29,8 @@ categories = [
 ]
 n_categories = len(categories)
 colors = ['blue', 'orange', 'green', 'red', 'purple']
+dashes = [[1, 0], [2, 2], [3, 2], [1, 2], [3, 1]]
+markers = ['o', 's', '^', 'D', 'v']
 
 top_data = np.array([
     [234, 158, 208, 307, 321, 439, 366, 576, 1296, 2648, 5029, 6247, 5241, 6029, 6701, 8903, 5839],
@@ -62,30 +70,30 @@ bottom_stds = [np.std(d, axis=0, ddof=1) for d in bottom_simulated_data]
 bottom_conf_ints = [1.96 * (s / np.sqrt(n_samples)) for s in bottom_stds]
 
 fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(15, 10), sharex=True)
-
+colors = plt.cm.tab10(np.arange(top_data.shape[0]))
 
 
 for i in range(top_data.shape[0]):
-    ax1.plot(x, top_means[i], marker='o', label=f'{top_labels[i]}', color=colors[i])
+    ax1.plot(x, top_means[i], marmarker = markers[i], dashes = dashes[i], label=f'{top_labels[i]}', color=colors[i])
     ax1.fill_between(x,
                      top_means[i] - top_conf_ints[i],
                      top_means[i] + top_conf_ints[i],
                      color=colors[i],
                      alpha=0.2)
 
-ax1.set_ylabel("Number of Tweets")
+ax1.set_ylabel("Number of Posts")
 ax1.legend(loc='upper left')
 ax1.grid(True)
 
 for i in range(bottom_data.shape[0]):
-    ax2.plot(x, bottom_means[i], marker='o', label=f'{bottom_labels[i]}', color=colors[i])
+    ax2.plot(x, bottom_means[i], marker = markers[i], dashes = dashes[i], label=f'{bottom_labels[i]}', color=colors[i])
     ax2.fill_between(x,
                      bottom_means[i] - bottom_conf_ints[i],
                      bottom_means[i] + bottom_conf_ints[i],
                      color=colors[i],
                      alpha=0.2)
 
-ax2.set_ylabel("Number of Tweets")
+ax2.set_ylabel("Number of Posts")
 ax2.legend(loc='upper left')
 ax2.grid(True)
 

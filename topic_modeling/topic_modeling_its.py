@@ -4,13 +4,18 @@ import pandas as pd
 import statsmodels.api as sm
 from matplotlib import rcParams
 
-rcParams['font.family'] = 'Serif'
-rcParams['axes.labelsize'] = 12
-rcParams['axes.titlesize'] = 12
-rcParams['xtick.labelsize'] = 14
-rcParams['ytick.labelsize'] = 14
-rcParams['legend.fontsize'] = 10
-rcParams['figure.titlesize'] = 16
+ #Parisa rcparams
+plt.rcParams['font.family'] = 'Serif'
+plt.rcParams['font.size'] = 15  # Base font size
+plt.rcParams['axes.labelsize'] = 15
+plt.rcParams['axes.titlesize'] = 15
+plt.rcParams['xtick.labelsize'] = 15
+plt.rcParams['ytick.labelsize'] = 15
+plt.rcParams['legend.fontsize'] = 15
+plt.rcParams['legend.title_fontsize'] = 15
+plt.rcParams['font.weight'] = 'bold'
+plt.rcParams['axes.titleweight'] = 'bold'
+plt.rcParams['axes.labelweight'] = 'bold'
 
 #plt.rcParams['font.weight'] = 'bold'
 plt.rcParams['axes.titleweight'] = 'bold'
@@ -74,9 +79,9 @@ post_trend = (b0 + b2) + (b1 + b3) * post_df["time"]
 plt.figure(figsize=(12, 6))
 plt.plot(categories, y, 'o-', label="Observed", color='blue', alpha=0.7)
 plt.plot(pre_df.index, pre_trend, 'g--', linewidth=2, label="Pre-interruption trend")
-plt.plot(post_df.index, post_trend, 'r--', linewidth=2, label="Post-interruption trend")
+#plt.plot(post_df.index, post_trend, 'r--', linewidth=2, label="Post-interruption trend")
 plt.axvline(x=interruption_index, color='black', linestyle='--', alpha=0.7)
-plt.text(interruption_index + 0.3, max(y)*0.9, "Interruption\n(7/2023–9/2023)", color='black')
+#plt.text(interruption_index + 0.3, max(y)*0.9, "Interruption\n(7/2023–9/2023)", color='black')
 
 plt.title("Interrupted Time Series Analysis — T6 (Death)")
 plt.xlabel("Bimonthly Period")
