@@ -11,9 +11,13 @@ ________________________________________________________________________________
 
 
 📌 Preprocess Code Files:
+
     1. preprocess_data.py --> for preprocessing the data
+    
     2. normalize_per_tweets.py --> normalize per tweets to make sure columns are same for different analysis
+    
     3. aggregate_by_author.py --> for main analysis group by user
+    
     4. aggregate_by_author_removeRetweets.py --> for sentivity analysis
 __________________________________________________________________________________________________________
 
