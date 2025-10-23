@@ -21,6 +21,7 @@ plt.rcParams['axes.labelweight'] = 'bold'
 
 # processed_df = pd.read_pickle('data/grouped2_data.pkl') what I want to do with user Date in aggregation. first date? last date? most common date? So it make more sense to use per tweet data
 processed_df = pd.read_pickle('data/normalized_data.pkl')
+
 df = processed_df.copy()
 df['Date'] = pd.to_datetime(df['Date'], errors='coerce')
 df = df.dropna(subset=['Date'])
@@ -173,7 +174,7 @@ country_stats = compute_ci(df, ['Country', 'Bimonthly'])
 #-----------------------------------------------------
 
 # Plotting
-fig, axes = plt.subplots(6, 1, figsize=(14, 16), sharex=True)
+fig, axes = plt.subplots(5, 1, figsize=(14, 16), sharex=True)
 gender_styles = ['-', '--', ':']
 interest_styles = ['-', '--', ':', '-.', '-']
 verified_styles = ['-', '--']
@@ -295,7 +296,7 @@ axes[3].legend(title='Account Type', loc='upper left', bbox_to_anchor=(1.02, 1))
 
 
 # Plot 5: Country (US vs Non-US)
-sns.lineplot(ax=axes[4], data=grouped_country, x='Bimonthly', y='mean_sentiment',
+'''sns.lineplot(ax=axes[4], data=grouped_country, x='Bimonthly', y='mean_sentiment',
              hue='Country', style='Country',
              markers=['o', 's', '^'], dashes=[(1, 0), (2, 2), (3, 2)],
              markersize=8, linewidth=2.5, palette='Set2')
@@ -303,19 +304,19 @@ sns.lineplot(ax=axes[4], data=grouped_country, x='Bimonthly', y='mean_sentiment'
 axes[4].set_title("Bimonthly Sentiment Analysis by Country", fontsize=18, fontweight='bold')
 axes[4].set_ylabel("Avg Sentiment", fontsize=15, fontweight='bold')
 axes[4].legend(title='Country')
-axes[4].grid(visible=True, linestyle='--', alpha=0.6)
+axes[4].grid(visible=True, linestyle='--', alpha=0.6)'''
 
 # Plot 5: Account Type Temporal Sentiment Analysis
-sns.lineplot(ax=axes[5], data=grouped_region, x='Bimonthly', y='mean_sentiment',
+sns.lineplot(ax=axes[4], data=grouped_region, x='Bimonthly', y='mean_sentiment',
              hue='Region', style='Region',
              markers=['o','s','^','D','v'], 
              dashes=[(1,0),(2,2),(3,2),(1,2),(3,1)],
              markersize=8, linewidth=2.5, palette='Set2')
 
-axes[5].set_title("Bimonthly Sentiment Analysis by US Region", fontsize=18, fontweight='bold')
-axes[5].set_ylabel("Avg Sentiment", fontsize=15, fontweight='bold')
-axes[5].legend(title='US Region')
-axes[5].grid(visible=True, linestyle='--', alpha=0.6)
+axes[4].set_title("Bimonthly Sentiment Analysis by US Region", fontsize=18, fontweight='bold')
+axes[4].set_ylabel("Avg Sentiment", fontsize=15, fontweight='bold')
+axes[4].legend(title='US Region')
+axes[4].grid(visible=True, linestyle='--', alpha=0.6)
 
 for ax in axes:
     ax.legend(             #This will ensure all explanation boxes (legends) stay outside

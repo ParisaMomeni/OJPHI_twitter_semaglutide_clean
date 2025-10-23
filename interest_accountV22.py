@@ -126,7 +126,7 @@ combined_heatmap = combined_heatmap[present + others]
 plt.figure(figsize=(12, 10))
 
 ax = sns.heatmap(
-    combined_heatmap, annot=True, cmap="coolwarm", fmt=".2f",
+    combined_heatmap, annot=True, cmap="coolwarm", fmt=".3f",
     linewidths=0.5, linecolor='gray'
 )
 

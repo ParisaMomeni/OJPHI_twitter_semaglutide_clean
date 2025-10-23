@@ -23,11 +23,11 @@ if __name__ == "__main__":
     #--------------------------
     #Each time we uncomment the relevant df loading line:
     #--------------------------
-    df = pd.read_pickle("../data/normalized_data.pkl")
+    #df = pd.read_pickle("../data/normalized_data.pkl")
     #df = df[df['Engagement Type'] != 'RETWEET']
-    #df = pd.read_pickle("../data/grouped2_data.pkl")
+    df = pd.read_pickle("../data/grouped2_data.pkl")
     #df= pd.read_pickle("../data/grouped2_data_removed_retweets.pkl")
-    #--------------------------
+    #--------------------------  
     df = df.dropna(subset=['mean_sentiment'])
 
 # --- CALCULATE OVERALL SENTIMENT ---
@@ -38,30 +38,13 @@ if __name__ == "__main__":
     })
     overall_stats_df = overall_stats.to_frame().reset_index()
     overall_stats_df.columns = ['Metric', 'Value']
-
 # --- SAVE RESULTS ---
     overall_stats_df.to_csv(f"output/overalscore/overall_sentiment_summary.csv", index=False)
     print("\n--- Overall Sentiment Summary ---")
     print(overall_stats_df)
-    #---------------------------
-
-
     
-    df = df.dropna(subset=['mean_sentiment'])
+#---------------------------
 
-# --- CALCULATE OVERALL SENTIMENT ---
-    overall_stats = df['mean_sentiment'].agg(['mean', 'std', 'count']).rename({
-        'mean': 'Mean Sentiment',
-        'std': 'Standard Deviation',
-        'count': 'Number of Tweets'
-    })
-    overall_stats_df = overall_stats.to_frame().reset_index()
-    overall_stats_df.columns = ['Metric', 'Value']
-# --- SAVE RESULTS ---
-    overall_stats_df.to_csv(f"{output_dir}overall_sentiment_summary.csv", index=False)
-    print("\n--- Overall Sentiment Summary ---")
-    print(overall_stats_df)
-    
     df = df.dropna(subset=['Gender', 'mean_sentiment'])
     overall_stats = df['mean_sentiment'].agg([ 'mean', 'std', 'count'])
     gender_stats = df.groupby('Gender')['mean_sentiment'].agg([ 'mean', 'std', 'count'])

@@ -1,3 +1,5 @@
+#for Sensivity Analysis excluding retweets
+#this file is exactly same with bimonthly_visualization_analysis.py but excludes retweets from the analysis
 import pandas as pd
 import numpy as np
 import seaborn as sns
@@ -5,7 +7,6 @@ import matplotlib.pyplot as plt
 import os
 import matplotlib.pyplot as plt
 
-# Set global font sizes and style
 plt.rcParams['font.family'] = 'Times New Roman'
 plt.rcParams['font.size'] = 15  # Base font size
 plt.rcParams['axes.labelsize'] = 15
@@ -22,12 +23,24 @@ plt.rcParams['axes.labelweight'] = 'bold'
 
 # processed_df = pd.read_pickle('data/grouped2_data.pkl') what I want to do with user Date in aggregation. first date? last date? most common date? So it make more sense to use per tweet data
 processed_df = pd.read_pickle('data/normalized_data.pkl')
-
 exclude_retweets = processed_df[processed_df['Engagement Type'] != 'RETWEET']
-print(f"Number of rows after removing retweets: {len(exclude_retweets)}")
+
 df = exclude_retweets.copy()
 df['Date'] = pd.to_datetime(df['Date'], errors='coerce')
 df = df.dropna(subset=['Date'])
+
+df['Gender'] = df['Gender'].replace({
+    'male': 'Male 95% CI',
+    'female': 'Female 95% CI',
+    'unknown': 'Unknown 95% CI'
+})
+# Standardize Account_Type
+df['Account Type'] = df['Account Type'].replace({
+    'individual': 'Individual 95% CI',
+    'organisational': 'Organizational 95% CI',
+    'unknown': 'Unknown 95% CI'
+})
+
 
 bin_edges = pd.date_range(start="2021-01-01", end="2024-12-30", freq="2MS")
 labels = [f"{bin_edges[i].month}/{bin_edges[i].year}--{bin_edges[i + 1].month}/{bin_edges[i + 1].year}" for i in range(len(bin_edges) - 1)]
@@ -64,35 +77,107 @@ for interest, periods in sentimentByInterestTemporal.items():
                 "Mean Sentiment": real_mean_sentiment,
                 "Count": total
                 })
-#print(f"temporaldata: {temporal_data}")
 temporal_df = pd.DataFrame(temporal_data)
 interestsOutputRoot = "output/interests"
 os.makedirs(interestsOutputRoot, exist_ok=True)
 temporal_df.to_csv(f"{interestsOutputRoot}/interests_temporal.csv", index=False)
 unique_interests = temporal_df['Interest'].unique()
 unique_interests_df = pd.DataFrame(unique_interests, columns=['Interest'])
-#print(f"intersts number: {len(unique_interests)}")
 
 
 #  verified vs non-verified sentiment calculation
-df['Twitter Verified'] = df['Twitter Verified'].fillna(False)  # Ensure no missing data for verified status
-grouped_verified = df.groupby(['Twitter Verified', 'Bimonthly'])['mean_sentiment'].mean().reset_index()
+df['Twitter Verified'] = df['Twitter Verified'].astype(str).str.strip().str.lower()
+df['Twitter Verified'] = df['Twitter Verified'].replace({
+    "true": "Verified", "t": "Verified", "yes": "Verified", "verified": "Verified",
+    "false": "Non-Verified", "f": "Non-Verified", "no": "Non-Verified", "unverified": "Non-Verified",
+    "": "Unknown", "unknown": "Unknown", "nan": "Unknown", "none": "Unknown"
+})
+df['Twitter Verified'] = df['Twitter Verified'].replace({
+    'Verified': 'Verified 95% CI',
+    'Non-Verified': 'Non-Verified 95% CI',
+    'Unknown': 'Unknown 95% CI'
+})
+unknown_verified_df = df[df['Twitter Verified'] == "Unknown"]
+print(unknown_verified_df['Date'])
 
-#Group by Account Type and Bimonthly period to calculate mean sentiment
-df['Account Type'] = df['Account Type'].fillna('Unknown')  # Fill with a default value
+first_date = unknown_verified_df['Date'].min()
+last_date  = unknown_verified_df['Date'].max()
+common_date = unknown_verified_df['Date'].mode()[0] if not unknown_verified_df['Date'].mode().empty else None
+print("Unknown Verified - Date Summary:")
+print("Earliest:", first_date)
+print("Latest:", last_date)
+print("Most Common:", common_date)
+
+
+    # Count Unknown only
+unknown_count = (df['Twitter Verified'] == "Unknown").sum()
+print("Number of Unknown Verified entries:", unknown_count)
+
+# Or counts for all 3 groups
+counts = df['Twitter Verified'].value_counts(dropna=False)
+print(counts)
+
+#grouped_verified = df.groupby(['Twitter Verified', 'Bimonthly'])['mean_sentiment'].mean().reset_index()
+grouped_verified = (
+    df.groupby(['Twitter Verified', 'Bimonthly'])['mean_sentiment']
+      .mean()
+      .reset_index()
+)
+#--------------------- Account Type Sentiment Calculation ----------------
+
+df['Account Type'] = df['Account Type'].fillna('Unknown') 
 grouped_account = df.groupby(['Account Type', 'Bimonthly'])['mean_sentiment'].mean().reset_index()
 
 
+# ---- Country mapping (US / Non-US / Unknown) ----
+US_REGIONS = ["Midwest", "Northeast", "Southeast", "Southwest", "West"]
+df["Region"] = df["Region"].astype(str).str.strip()
 
-grouped_region = df.groupby(['Region', 'Bimonthly'])['mean_sentiment'].mean().reset_index()
+def map_country(region):
+    if region in US_REGIONS:
+        return "US"
+    if region.strip().lower() == "out of usa":
+        return "Non-US"
+    return "Unknown"
+df["Country"] = df["Region"].apply(map_country)
+
+# Aggregate by Country + Bimonthly
+grouped_country = (
+    df.groupby(["Country", "Bimonthly"])["mean_sentiment"]
+      .mean()
+      .reset_index()
+)
+#---------------------------------------------------
+
+#grouped_region = df.groupby(['Region', 'Bimonthly'])['mean_sentiment'].mean().reset_index()
+df_us_only = df[df["Region"].isin(US_REGIONS)].copy()
+df_us_only["Region"] = pd.Categorical(df_us_only["Region"],
+                                      categories=US_REGIONS, ordered=True)
+grouped_region = (
+    df_us_only.groupby(["Region", "Bimonthly"])["mean_sentiment"]
+              .mean()
+              .reset_index()
+)
 print(grouped_region.head())
 grouped_region = grouped_region.dropna(subset=['mean_sentiment'])
 
-# Plotting
-#Create figure and axes
-fig, axes = plt.subplots(5, 1, figsize=(14, 16), sharex=True)
+#-----------------------------------------------------
+# === HELPER FUNCTION: COMPUTE 95% CI ===
+def compute_ci(data, group_cols, value_col='mean_sentiment'):
+    stats = data.groupby(group_cols)[value_col].agg(['mean', 'std', 'count']).reset_index()
+    stats['sem'] = stats['std'] / np.sqrt(stats['count'])
+    stats['ci95'] = 1.96 * stats['sem']
+    return stats.rename(columns={'mean': 'mean_sentiment'})
 
-#Define line styles for each subplot
+# === GROUPING ===
+gender_stats = compute_ci(df, ['Gender', 'Bimonthly'])
+verified_stats = compute_ci(df, ['Twitter Verified', 'Bimonthly'])
+account_stats = compute_ci(df, ['Account Type', 'Bimonthly'])
+country_stats = compute_ci(df, ['Country', 'Bimonthly'])
+#-----------------------------------------------------
+
+# Plotting
+fig, axes = plt.subplots(5, 1, figsize=(14, 16), sharex=True)
 gender_styles = ['-', '--', ':']
 interest_styles = ['-', '--', ':', '-.', '-']
 verified_styles = ['-', '--']
@@ -101,21 +186,32 @@ region_styles = ['-', '--', ':', '-.', '-', '--']
 
 def style_subplot(ax, title):
     ax.set_title(title, pad=15, fontsize=15, fontweight='bold')
-    ax.set_ylabel("Average Sentiment Score", fontsize=15, fontweight='bold')
+    ax.set_ylabel("Avg Sentiment", fontsize=15, fontweight='bold')
     ax.tick_params(axis='both', labelsize=15, fontweight='bold')
     ax.grid(visible=True, linestyle='--', alpha=0.6)
     ax.legend(title_fontsize=15, fontsize=15, bbox_to_anchor=(1.02, 1), loc='upper left', fontweight='bold')
 
 # Plot 1: Gender-based analysis
-sns.lineplot(ax=axes[0], data=grouped_gender, x='Bimonthly', y='mean_sentiment', 
+sns.lineplot(ax=axes[0], data=gender_stats, x='Bimonthly', y='mean_sentiment', 
              hue='Gender', style='Gender',
              markers=['o', 's', '^'], dashes=[(1, 0), (2, 2), (3, 2)],
              markersize=8, linewidth=2.5, palette='Set2')
 
+# Add CI bands without adding duplicate legend entries
+for gender, grp in gender_stats.groupby('Gender'):
+    axes[0].fill_between(grp['Bimonthly'], 
+                         grp['mean_sentiment'] - grp['ci95'], 
+                         grp['mean_sentiment'] + grp['ci95'],
+                         alpha=0.2, 
+                         color=sns.color_palette('Set2')[list(gender_stats['Gender'].unique()).index(gender)],
+                         label=None)  
+
 axes[0].set_title("Bimonthly Sentiment Analysis by Gender", fontsize=18, fontweight='bold')
-axes[0].set_ylabel("Average Sentiment Score", fontsize=15, fontweight='bold')
-axes[0].legend(title='Gender')
+axes[0].set_ylabel("Avg Sentiment", fontsize=15, fontweight='bold')
 axes[0].grid(visible=True, linestyle='--', alpha=0.6)
+axes[0].legend(title='Gender', loc='upper left', bbox_to_anchor=(1.02, 1))
+
+    
 
 # Plot 2: Interest-based analysis (choose top 5 interests for clarity)
 # Calculate the total popularity for each interest
@@ -143,44 +239,96 @@ sns.lineplot(ax=axes[1], data=top_interests_plot,
              dashes=[(1, 0), (2, 2), (3, 2), (1, 2), (3, 1)],
              markersize=8, linewidth=2.5, palette='tab10')
 axes[1].set_title("Bimonthly Sentiment Analysis by Interest", fontsize=18, fontweight='bold')
-axes[1].set_ylabel("Average Sentiment Score", fontsize=15, fontweight='bold')
+axes[1].set_ylabel("Avg Sentiment", fontsize=15, fontweight='bold')
 axes[1].legend(title='Interest')
 axes[1].grid(visible=True, linestyle='--', alpha=0.6)
 
 # Plot 3: Verified vs Non-Verified Users Analysis
-sns.lineplot(ax=axes[2], data=grouped_verified, x='Bimonthly', y='mean_sentiment',
+# Define fixed palette mapping
+
+verified_order = ['Verified 95% CI', 'Non-Verified 95% CI', 'Unknown 95% CI']
+verified_palette = {
+    'Verified 95% CI': '#EA5F94',
+    'Non-Verified 95% CI': '#3B4CC0',
+    'Unknown 95% CI': '#999999'
+}
+
+sns.lineplot(ax=axes[2], data=verified_stats, x='Bimonthly', y='mean_sentiment',
              hue='Twitter Verified', style='Twitter Verified',
-             markers=['o', 's'], dashes=[(1, 0), (2, 2)],
-             markersize=8, linewidth=2.5, palette='coolwarm')
+             hue_order=verified_order, style_order=verified_order,
+             markers=['o', 's', '^'], dashes=[(1, 0), (2, 2), (3, 2)],
+             markersize=8, linewidth=2.5, palette=verified_palette)
+
+# Add CI bands manually
+for status in verified_order:
+    grp = verified_stats[verified_stats['Twitter Verified'] == status].dropna(subset=['mean_sentiment', 'ci95'])
+    
+    if not grp.empty:
+        axes[2].fill_between(grp['Bimonthly'],
+                             grp['mean_sentiment'] - grp['ci95'],
+                             grp['mean_sentiment'] + grp['ci95'],
+                             alpha=0.2,
+                             color=verified_palette[status],
+                             label=None)
+
+
+# Final styling
 axes[2].set_title("Bimonthly Sentiment Analysis by Verified Status", fontsize=18, fontweight='bold')
-axes[2].set_ylabel("Average Sentiment Score", fontsize=15, fontweight='bold')
-axes[2].legend(title='Twitter Verified')
+axes[2].set_ylabel("Avg Sentiment", fontsize=15, fontweight='bold')
 axes[2].grid(visible=True, linestyle='--', alpha=0.6)
+axes[2].legend(title='Twitter Verified', loc='upper left', bbox_to_anchor=(1.02, 1))
 
 # Plot 4: Account Type Temporal Sentiment Analysis
-sns.lineplot(ax=axes[3], data=grouped_account, x='Bimonthly', y='mean_sentiment',
+sns.lineplot(ax=axes[3], data=account_stats, x='Bimonthly', y='mean_sentiment',
              hue='Account Type', style='Account Type',
-             markers=['o', 's', '^', 'D'], 
-             dashes=[(1, 0), (2, 2), (3, 2), (1, 2)],
+             markers=['o', 's'],  # Only keep markers for known categories
+             dashes=[(1, 0), (2, 2)],
              markersize=8, linewidth=2.5, palette='Set2')
+for i, (acct_type, grp) in enumerate(account_stats.groupby('Account Type')):
+    axes[3].fill_between(grp['Bimonthly'],
+                         grp['mean_sentiment'] - grp['ci95'],
+                         grp['mean_sentiment'] + grp['ci95'],
+                         alpha=0.2,
+                         color=sns.color_palette('Set2')[i],
+                         label=None)  # Avoid extra legend lines
+
 axes[3].set_title("Bimonthly Sentiment Analysis by Account Type", fontsize=18, fontweight='bold')
-axes[3].set_ylabel("Average Sentiment Score", fontsize=15, fontweight='bold')
-axes[3].legend(title='Account Type')
+axes[3].set_ylabel("Avg Sentiment", fontsize=15, fontweight='bold')
 axes[3].grid(visible=True, linestyle='--', alpha=0.6)
+axes[3].legend(title='Account Type', loc='upper left', bbox_to_anchor=(1.02, 1))
+
+
+# Plot 5: Country (US vs Non-US)
+'''sns.lineplot(ax=axes[4], data=grouped_country, x='Bimonthly', y='mean_sentiment',
+             hue='Country', style='Country',
+             markers=['o', 's', '^'], dashes=[(1, 0), (2, 2), (3, 2)],
+             markersize=8, linewidth=2.5, palette='Set2')
+
+axes[4].set_title("Bimonthly Sentiment Analysis by Country", fontsize=18, fontweight='bold')
+axes[4].set_ylabel("Avg Sentiment", fontsize=15, fontweight='bold')
+axes[4].legend(title='Country')
+axes[4].grid(visible=True, linestyle='--', alpha=0.6)'''
 
 # Plot 5: Account Type Temporal Sentiment Analysis
 sns.lineplot(ax=axes[4], data=grouped_region, x='Bimonthly', y='mean_sentiment',
              hue='Region', style='Region',
-             markers=['o', 's', '^', 'D', 'v', 'p'], 
-             dashes=[(1, 0), (2, 2), (3, 2), (1, 2), (3, 1), (2, 1)],
+             markers=['o','s','^','D','v'], 
+             dashes=[(1,0),(2,2),(3,2),(1,2),(3,1)],
              markersize=8, linewidth=2.5, palette='Set2')
 
-axes[4].set_title("Bimonthly Sentiment Analysis by Regional", fontsize=18, fontweight='bold')
-axes[4].set_ylabel("Average Sentiment Score", fontsize=15, fontweight='bold')
-axes[4].legend(title='Region')
+axes[4].set_title("Bimonthly Sentiment Analysis by US Region", fontsize=18, fontweight='bold')
+axes[4].set_ylabel("Avg Sentiment", fontsize=15, fontweight='bold')
+axes[4].legend(title='US Region')
 axes[4].grid(visible=True, linestyle='--', alpha=0.6)
 
 for ax in axes:
+    ax.legend(             #This will ensure all explanation boxes (legends) stay outside
+        bbox_to_anchor=(1.02, 1),
+        loc="upper left",
+        borderaxespad=0,
+        fontsize=15,
+        title_fontsize=15
+    )
     plt.setp(ax.xaxis.get_majorticklabels(), rotation=45, ha='right', fontsize=20)
 plt.subplots_adjust(right=0.85, bottom=0.1, hspace=0.4)
 
@@ -191,6 +339,6 @@ plt.tight_layout(pad=2, h_pad=1)  # h_pad adjusts vertical spacing between subpl
 
 # Save the combined plot
 output_dir = "output/bimonthly/"
-plt.savefig(f"{output_dir}bimonthly_gender_interest_sentiment_analysis.V2.png",bbox_inches='tight')
+plt.savefig(f"{output_dir}bimonthly_gender_interest_sentiment_analysis.retweetExclusion.png",bbox_inches='tight')
 plt.show()
 

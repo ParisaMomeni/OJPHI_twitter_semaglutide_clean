@@ -1,26 +1,3 @@
-Attribute,Subpopulation,Number of Authors
-Gender,,
-,Male,105591
-,Female,87556
-,Unknown,234983
-,Null,8421
-,Other,0
-Verified,,
-,True,27410
-,False,393532
-,Other,0
-,Unknown,15609
-Account Type,,
-,Individual,426691
-,Organizational,9860
-,Others,0
-,Unknown,0
-Region,,
-,Midwest,17491
-,Northeast,30840
-,Southeast,25260
-,Southwest,15775
-,West,25482
-,Other,0
-,out of usa,289522
-,Unknown,32181
+version https://git-lfs.github.com/spec/v1
+oid sha256:4d17cb655103062158004c9f83c95feb3818787baa5efca023ed977968b503e2
+size 381

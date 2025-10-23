@@ -1,26 +1,3 @@
-Attribute,Subpopulation,Number of Tweets
-Gender,,
-,Male,202042
-,Female,170997
-,Unknown,446847
-,Null,39865
-,Other,0
-Verified,,
-,True,78649
-,False,733361
-,Other,0
-,Unknown,47741
-Account Type,,
-,Individual,816227
-,Organizational,43524
-,Others,0
-,Unknown,0
-Region,,
-,Midwest,33974
-,Northeast,72505
-,Southeast,49403
-,Southwest,30024
-,West,52790
-,Other,0
-,out of usa,549802
-,Unknown,71253
+version https://git-lfs.github.com/spec/v1
+oid sha256:88f0e051d17859e3b74de3f7fb7036cc272f5b40696e060c405f371cab27f478
+size 383

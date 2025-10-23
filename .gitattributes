@@ -2,3 +2,4 @@
 * text=auto
 *.pkl filter=lfs diff=lfs merge=lfs -text
 output/analyze_interest filter=lfs diff=lfs merge=lfs -text
+*.csv filter=lfs diff=lfs merge=lfs -text

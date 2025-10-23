@@ -72,7 +72,7 @@ plt.rcParams['axes.labelweight'] = 'bold'
 #plt.rcParams['font.weight'] = 'bold'
 plt.rcParams['axes.titleweight'] = 'bold'
 
-df = pd.read_csv("../../data/Semaglutide_Twitter_Topic_mapping.csv") # Full dataset not included in repository
+df = pd.read_csv("../data/Semaglutide_Twitter_Topic_mapping.csv") # Full dataset not included in repository
 df['state_to_region'] = df['Region'].map(state_to_region)
 df['state_to_region'] = df['state_to_region'].fillna('Unknown')
 

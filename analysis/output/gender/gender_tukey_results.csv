@@ -1,4 +1,0 @@
-group1,group2,meandiff,p-adj,lower,upper,reject
-female,male,0.1251,0.0,0.12,0.1303,True
-female,unknown,0.0368,0.0,0.0324,0.0413,True
-male,unknown,-0.0883,0.0,-0.0925,-0.0841,True
