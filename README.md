@@ -1,8 +1,11 @@
 
-📁 Data Folders
+📁 Data Folders:
+
     normalized_data/ – Tweet-level normalized data
          ↳ Retweets removed via .py scripts for per-tweet analysis 
+         
     grouped2_data/ – Aggregated data grouped by user
+    
     grouped2_data_removeRetweets/ – Same as above, but with retweets excluded
 __________________________________________________________________________________________________________
 
