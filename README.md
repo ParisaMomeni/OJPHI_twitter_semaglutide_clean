@@ -23,21 +23,33 @@ ________________________________________________________________________________
 
 
 📊 Analysis & Figures
+
     5. numberOfSubpopu.py ---> Appendix --> table s1
+    
     6. BertVersion.py --> BERT version per reviewer comment
+    
     7. interest_accountV22.py --> sentiment and account analysis ---> heatmap ---> Figure 5
+    
     8. bimonthly_visualization_analysis.py --> for main analysis---> Figure 2
+    
     9. bimonthly_visualization_analysisـretweetExclusion.py --> for sentivity analysis ---> Appendix Figure S3
+    
     10. 95% confidence interval.py --> for confidence interval calculation ---> Table 2
-    11. ITS2.py --> for ITS analysis  ---> Table 1,  Figure  ____________________________________________________________________________________________________________
+    
+    11. ITS2.py --> for ITS analysis  ---> Table 1,  Figure  
+    ____________________________________________________________________________________________________________
     
 
 👥 Subpopulation Analysis --->folder SubpopulationAnalysis: 
+
     gender2.py, verified_users2.py, account_type2.py, regional2.py,  verified_users2.py --> for subpopulation analysis---> Figure 4 and Appendix Table S1
+    
 __________________________________________________________________________________________________________
 
 📂 Output Folders:
+
     output --> for main analysis
+    
     output--> inside SubpopulationAnalysis folder --> for attribute analysis
 
 
