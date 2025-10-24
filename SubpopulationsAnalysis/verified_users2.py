@@ -1,4 +1,3 @@
-# 1.  VERIFIED USER DESCRIPTIVE STATISTICS
 # df is input data frame. we might have 4: 1.per tweet , 2.per user 3.per tweet without retweets 4.per user without retweets. Each time we uncomment the relevant df loading line:
 import pandas as pd
 import numpy as np
@@ -15,12 +14,10 @@ if __name__ == "__main__":
     #df= pd.read_pickle("../data/grouped2_data_removed_retweets.pkl") # all tweets without retweets grouped by author
     output_root = "output/verified"  
     
-    # Separate verified and non-verified users
     verified = df[df['Verified'] == True]['mean_sentiment']
     not_verified = df[df['Verified'] == False]['mean_sentiment']
     unknown = df[df['Verified'].isna()]['mean_sentiment']
 
-#mean of verified and not verified
     verified_mean = verified.mean()
     not_verified_mean = not_verified.mean()
     unknown_mean = unknown.mean()

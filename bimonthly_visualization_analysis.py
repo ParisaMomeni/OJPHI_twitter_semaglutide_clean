@@ -110,7 +110,6 @@ print("Most Common:", common_date)
 unknown_count = (df['Twitter Verified'] == "Unknown").sum()
 print("Number of Unknown Verified entries:", unknown_count)
 
-# Or counts for all 3 groups
 counts = df['Twitter Verified'].value_counts(dropna=False)
 print(counts)
 
@@ -146,7 +145,6 @@ grouped_country = (
 )
 #---------------------------------------------------
 
-#grouped_region = df.groupby(['Region', 'Bimonthly'])['mean_sentiment'].mean().reset_index()
 df_us_only = df[df["Region"].isin(US_REGIONS)].copy()
 df_us_only["Region"] = pd.Categorical(df_us_only["Region"],
                                       categories=US_REGIONS, ordered=True)
@@ -196,7 +194,7 @@ sns.lineplot(ax=axes[0], data=gender_stats, x='Bimonthly', y='mean_sentiment',
              markers=['o', 's', '^'], dashes=[(1, 0), (2, 2), (3, 2)],
              markersize=8, linewidth=2.5, palette='Set2')
 
-# Add CI bands without adding duplicate legend entries
+#  CI bands
 for gender, grp in gender_stats.groupby('Gender'):
     axes[0].fill_between(grp['Bimonthly'], 
                          grp['mean_sentiment'] - grp['ci95'], 
@@ -243,7 +241,7 @@ sns.lineplot(ax=axes[1], data=interest_stats,
              dashes=[(1, 0), (2, 2), (3, 2), (1, 2), (3, 1)],
              markersize=8, linewidth=2.5, palette='tab10')
 
-# Add 95% CI bands
+#  95% CI bands
 palette = sns.color_palette('tab10', n_colors=len(interest_stats['Interest'].unique()))
 for i, (interest, grp) in enumerate(interest_stats.groupby('Interest')):
     axes[1].fill_between(grp['Bimonthly'],
@@ -257,8 +255,6 @@ axes[1].legend(title='Interest')
 axes[1].grid(visible=True, linestyle='--', alpha=0.6)
 
 # Plot 3: Verified vs Non-Verified Users Analysis
-# Define fixed palette mapping
-
 verified_order = ['Verified', 'Non-Verified', 'Unknown']
 verified_palette = {
     'Verified': '#EA5F94',
@@ -272,7 +268,7 @@ sns.lineplot(ax=axes[2], data=verified_stats, x='Bimonthly', y='mean_sentiment',
              markers=['o', 's', '^'], dashes=[(1, 0), (2, 2), (3, 2)],
              markersize=8, linewidth=2.5, palette=verified_palette)
 
-# Add CI bands manually
+#  CI bands manually
 for status in verified_order:
     grp = verified_stats[verified_stats['Twitter Verified'] == status].dropna(subset=['mean_sentiment', 'ci95'])
     
@@ -285,7 +281,7 @@ for status in verified_order:
                              label=None)
 
 
-# Final styling
+#  styling
 axes[2].set_title("Bimonthly Sentiment Analysis by Verified Status", fontsize=18, fontweight='bold')
 axes[2].set_ylabel("Avg Sentiment", fontsize=15, fontweight='bold')
 axes[2].grid(visible=True, linestyle='--', alpha=0.6)
@@ -344,7 +340,7 @@ axes[4].legend(title='US Region')
 axes[4].grid(visible=True, linestyle='--', alpha=0.6)
 
 for ax in axes:
-    ax.legend(             #This will ensure all explanation boxes (legends) stay outside
+    ax.legend(             # explanation boxes (legends) outside
         bbox_to_anchor=(1.02, 1),
         loc="upper left",
         borderaxespad=0,

@@ -1,5 +1,5 @@
 #for Sensivity Analysis excluding retweets
-#this file is exactly same with bimonthly_visualization_analysis.py but excludes retweets from the analysis
+#this file is exactly same with bimonthly_visualization_analysis.py but excludes retweets from the analysis. (df and output pahths are different)
 import pandas as pd
 import numpy as np
 import seaborn as sns
@@ -29,12 +29,12 @@ df = exclude_retweets.copy()
 df['Date'] = pd.to_datetime(df['Date'], errors='coerce')
 df = df.dropna(subset=['Date'])
 
+# Standardize Gender, Account_Type
 df['Gender'] = df['Gender'].replace({
     'male': 'Male',
     'female': 'Female', #here if want to add 95% CI label
     'unknown': 'Unknown'
 })
-# Standardize Account_Type
 df['Account Type'] = df['Account Type'].replace({
     'individual': 'Individual',
     'organisational': 'Organizational',
@@ -109,7 +109,7 @@ print("Latest:", last_date)
 print("Most Common:", common_date)
 
 
-    # Count Unknown only
+# Count Unknown only
 unknown_count = (df['Twitter Verified'] == "Unknown").sum()
 print("Number of Unknown Verified entries:", unknown_count)
 
@@ -117,7 +117,6 @@ print("Number of Unknown Verified entries:", unknown_count)
 counts = df['Twitter Verified'].value_counts(dropna=False)
 print(counts)
 
-#grouped_verified = df.groupby(['Twitter Verified', 'Bimonthly'])['mean_sentiment'].mean().reset_index()
 grouped_verified = (
     df.groupby(['Twitter Verified', 'Bimonthly'])['mean_sentiment']
       .mean()
@@ -347,7 +346,7 @@ axes[4].legend(title='US Region')
 axes[4].grid(visible=True, linestyle='--', alpha=0.6)
 
 for ax in axes:
-    ax.legend(             #This will ensure all explanation boxes (legends) stay outside
+    ax.legend(             # explanation boxes (legends) outside
         bbox_to_anchor=(1.02, 1),
         loc="upper left",
         borderaxespad=0,
@@ -363,7 +362,6 @@ plt.tight_layout(pad=2, h_pad=1)  # h_pad adjusts vertical spacing between subpl
 
 
 
-# Save the combined plot
 output_dir = "output/bimonthly/"
 plt.savefig(f"{output_dir}bimonthly_gender_interest_sentiment_analysis.retweetExclusion.png",bbox_inches='tight')
 plt.show()

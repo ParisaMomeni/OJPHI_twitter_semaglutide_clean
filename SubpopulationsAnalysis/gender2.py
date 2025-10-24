@@ -1,5 +1,5 @@
 #1.  CALCULATE OVERALL SENTIMENT 2. gender DESCRIPTIVE STATISTICS
-#df is input data frame. we might have 4: 1.per tweet , 2.per user 3.per tweet without retweets 4.per user without retweets. 
+#df is input data frame. we might have 4 df: 1.per tweet , 2.per user 3.per tweet without retweets 4.per user without retweets. 
 import pandas as pd
 import numpy as np
 import pandas as pd
@@ -16,7 +16,6 @@ import math
 from pathlib import Path
 
 if __name__ == "__main__":
-    # Define output directories
     output_dir = "output/gender/"
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)

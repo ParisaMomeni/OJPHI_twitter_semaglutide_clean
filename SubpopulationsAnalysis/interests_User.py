@@ -8,7 +8,7 @@ if __name__ == "__main__":
     - Uses continuous mean_sentiment in [-1, 1].
     - Produces per-interest statistics: count, mean, std.
     """
-    #df
+    
     df = pd.read_pickle("../data/grouped2_data.pkl")
     interestsOutputRoot = "../output/interests/interests_User"
 

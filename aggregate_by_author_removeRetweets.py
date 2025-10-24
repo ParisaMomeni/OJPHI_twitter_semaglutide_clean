@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+
 # for mean sentiment grouped by user I have 2 options: 1. continues value or 2. discrete {−1,0,1} at author level author_label=('sentiment_label', majority_label), I chose contiuous mean sentiment value
 """
 Aggregate processed per-tweet data into per-author grouped data.
@@ -103,7 +103,6 @@ def normalize_region(df, region_col="Region", country_col="Country"):
         # Fill mapped where in USA
         norm.loc[in_usa] = mapped.loc[in_usa]
 
-        # Unmapped USA states/labels: set Unknown if empty/unknown-like; else Other
         unknown_like = states.isin(["", "unknown", "nan", "none", "null"])
         # For USA + unmapped + unknown_like -> 'Unknown'
         idx_unknown = in_usa & mapped.isna() & unknown_like

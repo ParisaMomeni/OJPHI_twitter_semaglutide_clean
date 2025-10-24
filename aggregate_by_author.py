@@ -87,7 +87,7 @@ def normalize_region(df, region_col="Region", country_col="Country"):
       - If missing/empty → 'Unknown'
       - Otherwise → 'Other'
     """
-    # Start with empty series to avoid chained assignment warnings
+    #empty series to avoid chained assignment warnings
     norm = pd.Series(index=df.index, dtype=object)
 
     # Determine USA / non-USA
@@ -96,7 +96,7 @@ def normalize_region(df, region_col="Region", country_col="Country"):
     # For non-USA rows
     norm.loc[~in_usa] = "out of usa"
 
-    # For USA rows: try map state -> region
+    # For USA rows: map state -> region
     if region_col in df.columns:
         states = df[region_col].apply(_clean_str)
         mapped = states.map(STATE_TO_REGION)

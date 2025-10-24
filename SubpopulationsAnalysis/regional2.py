@@ -9,7 +9,7 @@ if __name__ == "__main__":
     CountryRoot  = Path("output/country")
 
  #------------4 df inputs : -----------------------------------
- # 1. grouped2_data.pkl 2. normalized_data.pkl 3. grouped2_data_removed_retweets.pkl 4. processed_data.pkl
+ # 1. normalized_data.pkl 2. normalized_data.pkl and df['Engagement Type'] != 'RETWEET'] # remove retweets  3. grouped2_data.pkl 4. grouped2_data_removed_retweets.pkl
  # Outcoments one df each time
  #-------------------------------------------------------------
     df = pd.read_pickle("../data/normalized_data.pkl") # all tweets and retweets
@@ -19,9 +19,9 @@ if __name__ == "__main__":
     #df = pd.read_pickle("../data/grouped2_data.pkl").copy()
 #-----------------------------------------------------------
     
-    # Normalize Region text and exclude Unknown/Other/blank + NaN
     df['Region'] = df['Region'].astype(str).str.strip()
-    #---------------------------
+    
+#---------------------------
 # Country-level analysis
 #---------------------------
     US_REGIONS = {"Midwest", "Northeast", "Southeast", "Southwest", "West"}
@@ -32,7 +32,6 @@ if __name__ == "__main__":
             return "US"
         if r.lower() == "out of usa":
             return "Non-US"
-        # anything else (if it sneaks through) -> Unknown
         return "Unknown"
 
     df["Country"] = df["Region"].apply(map_country)
@@ -58,14 +57,9 @@ if __name__ == "__main__":
     )
     df = df[mask_valid_region]
 
-    # (Optional) keep only the five U.S. macro-regions used in the paper
-    # allowed_regions = {"Midwest", "Northeast", "Southeast", "Southwest", "West"}
-    # df = df[df['Region'].isin(allowed_regions)]
-
-    # Ensure sentiment exists
     df = df.dropna(subset=['mean_sentiment'])
 
-    # Aggregate
+    
     region_group = (
         df.groupby('Region', as_index=False)['mean_sentiment']
           .agg(['mean', 'std', 'count'])

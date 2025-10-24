@@ -10,10 +10,6 @@ from statsmodels.stats.weightstats import DescrStatsW, CompareMeans
 import statsmodels.api as sm
 import os
 
-#df = pd.read_pickle('data/grouped2_data.pkl') 
-#df = pd.read_pickle('data/normalized_data.pkl')
-#df['Date'] = pd.to_datetime(df['Date'], errors='coerce')
-#df = df.dropna(subset=['Date'])
 
 
 ## This script can use two types of input data:1. INPUT_Per_Tweets – data at the tweet level 2. INPUT_Grouped_By_USER – data aggregated per user.
@@ -82,7 +78,7 @@ def effect_size_and_ci(group1, group2, label):
     stats2 = DescrStatsW(g2)
     cm = CompareMeans(stats1, stats2)
 
-    mean_diff = np.mean(g1) - np.mean(g2)  # Manual calculation
+    mean_diff = np.mean(g1) - np.mean(g2)  #  calculation
     ci_low, ci_high = cm.tconfint_diff()
     t_stat, p_val = ttest_ind(g1, g2, equal_var=False)  # Welch’s t-test (a version of the independent t-test that does not assume equal variances between the groups).
 

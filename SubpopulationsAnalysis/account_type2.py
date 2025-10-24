@@ -35,12 +35,10 @@ if __name__ == "__main__":
     account_type_stats = account_type_stats.sort_values('Mean_Sentiment', ascending=False)
 
     output_file = os.path.join(output_root, 'account_type_sentiment_stats.csv')
-    #account_type_stats.to_csv(output_file, index=False, header=True)
     account_type_stats.to_csv(f"{output_root}/mean_results.csv", index=False, header=True)
 
-    print(f"Account type sentiment statistics have been written to {output_file}")
 
-    # Print the results
+    print(f"Account type sentiment statistics have been written to {output_file}")
     print("\nAccount Type Sentiment Statistics:")
     print(account_type_stats)
 
