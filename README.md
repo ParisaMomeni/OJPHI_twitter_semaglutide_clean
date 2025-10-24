@@ -37,6 +37,16 @@ ________________________________________________________________________________
     10. 95% confidence interval.py --> for confidence interval calculation ---> Table 2
     
     11. ITS2.py --> for ITS analysis  ---> Table 1,  Figure  
+
+    12. topic_breakdown.py ---> Figure 9
+
+    13. topic_modeling_ci.py ---> Table S7
+
+    14. topic_modeling_its.py ---> Figure 8
+
+    15. topic_modeling_prevalence.py ---> Figure 6
+
+    16. topic_modeling_temporal.py ---> Figure 7
     ____________________________________________________________________________________________________________
     
 
