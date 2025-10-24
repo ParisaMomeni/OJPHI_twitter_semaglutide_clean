@@ -21,10 +21,12 @@ if __name__ == "__main__":
     output_root = "output/account_type"
     
     #--------------- Uncomment one of the following lines to choose the input data file----------------------
-    #df = pd.read_pickle("../data/normalized_data.pkl") # all tweets and retweets
-    #df = df[df['Engagement Type'] != 'RETWEET'] # remove retweets
+    df = pd.read_pickle("../data/normalized_data.pkl") # all tweets and retweets
+    df = df[df['Engagement Type'] != 'RETWEET'] # remove retweets
     #df = pd.read_pickle("../data/grouped2_data.pkl") # all tweets and retweets grouped by user
-    df= pd.read_pickle("../data/grouped2_data_removed_retweets.pkl") # all tweets without retweets grouped by user
+    user_lenght = len(df)
+    print(f"Total users: {user_lenght:,}")
+    #df= pd.read_pickle("../data/grouped2_data_removed_retweets.pkl") # all tweets without retweets grouped by user
     #------------------------------------------------------------------------------------------------------
     df = df.dropna(subset=['Account_Type'])
     account_type_stats = df.groupby('Account_Type')['mean_sentiment'].agg(['mean', 'std']).reset_index()

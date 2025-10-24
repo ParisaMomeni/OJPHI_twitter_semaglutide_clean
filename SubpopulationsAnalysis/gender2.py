@@ -23,9 +23,13 @@ if __name__ == "__main__":
     #--------------------------
     #Each time we uncomment the relevant df loading line:
     #--------------------------
-    #df = pd.read_pickle("../data/normalized_data.pkl")
-    #df = df[df['Engagement Type'] != 'RETWEET']
-    df = pd.read_pickle("../data/grouped2_data.pkl")
+    df = pd.read_pickle("../data/normalized_data.pkl")
+    total_posts = len(df)
+    df = df[df['Engagement Type'] != 'RETWEET']
+    retweet_exxluded_posts = len(df)
+    print(f"Total posts before exclusion: {total_posts:,}")
+    print(f"Total posts after retweet exclusion: {retweet_exxluded_posts:,}")
+    #df = pd.read_pickle("../data/grouped2_data.pkl")
     #df= pd.read_pickle("../data/grouped2_data_removed_retweets.pkl")
     #--------------------------  
     df = df.dropna(subset=['mean_sentiment'])
