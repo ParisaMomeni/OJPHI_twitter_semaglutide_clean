@@ -52,7 +52,9 @@ ________________________________________________________________________________
 
 👥 Subpopulation Analysis --->folder SubpopulationAnalysis: 
 
-    gender2.py, verified_users2.py, account_type2.py, regional2.py,  verified_users2.py --> for subpopulation analysis---> Figure 4 and Appendix Table S1
+    gender2.py, verified_users2.py, account_type2.py, regional2.py,  verified_users2.py --> for subpopulation analysis--->  Appendix Table S1
+    sentiment_boxplots.py ---> Figure 4
+    
     
 __________________________________________________________________________________________________________
 
